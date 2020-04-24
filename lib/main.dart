@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:passwordfield/passwordfield.dart';
 
 void main() => runApp(SignUpApp());
 
@@ -9,7 +10,25 @@ class SignUpApp extends StatelessWidget {
       routes: {
         '/': (context) => SignUpScreen(),
         '/welcome': (context) => WelcomeScreen(),
+        '/login': (context) => LoginScreen(),
       },
+    );
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[200],
+      body: Center(
+        child: SizedBox(
+          width: 400,
+          child: Card(
+            child: LoginForm(),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -42,15 +61,68 @@ class WelcomeScreen extends StatelessWidget {
   }
 }
 
+class LoginForm extends StatefulWidget {
+  @override
+  _LoginFormState createState() => _LoginFormState();
+}
+
 class SignUpForm extends StatefulWidget {
   @override
   _SignUpFormState createState() => _SignUpFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  final _usernameTextController = TextEditingController();
+  final _passwordTextController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+
+  void _showWelcomeScreen() {
+    Navigator.of(context).pushNamed('/welcome');
+  }
+
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Login', style: Theme.of(context).textTheme.display1),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextFormField(
+              controller: _usernameTextController,
+              decoration: InputDecoration(hintText: 'Username'),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextFormField(
+              obscureText: true,
+              controller: _passwordTextController,
+              decoration: InputDecoration(hintText: 'Password'),
+            ),
+          ),
+          FlatButton(
+            color: Colors.blue,
+            textColor: Colors.white,
+            onPressed: _showWelcomeScreen,
+            child: Text('Login'),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _SignUpFormState extends State<SignUpForm> {
   final _firstNameTextController = TextEditingController();
   final _lastNameTextController = TextEditingController();
   final _usernameTextController = TextEditingController();
+  final _passwordTextController = TextEditingController();
+  final _cpasswordTextController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
 
   double _formProgress = 0;
 
@@ -59,7 +131,9 @@ class _SignUpFormState extends State<SignUpForm> {
     var controllers = [
       _firstNameTextController,
       _lastNameTextController,
-      _usernameTextController
+      _usernameTextController,
+      _passwordTextController,
+      _cpasswordTextController
     ];
 
     for (var controller in controllers) {
@@ -73,13 +147,14 @@ class _SignUpFormState extends State<SignUpForm> {
     });
   }
 
-  void _showWelcomeScreen() {
-    Navigator.of(context).pushNamed('/welcome');
+  void _showLoginScreen() {
+    Navigator.of(context).pushNamed('/login');
   }
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       onChanged: () => _updateFormProgress(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -107,10 +182,33 @@ class _SignUpFormState extends State<SignUpForm> {
               decoration: InputDecoration(hintText: 'Username'),
             ),
           ),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextFormField(
+              obscureText: true,
+              controller: _passwordTextController,
+              decoration: InputDecoration(hintText: 'Password'),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextFormField(
+              obscureText: true,
+              controller: _cpasswordTextController,
+              decoration: InputDecoration(hintText: 'Confirm Password'),
+              validator: (val){
+                if(val.isEmpty)
+                  return 'Empty';
+                if(val != _passwordTextController.text)
+                  return 'Not match';
+                return null;
+              }
+            ),
+          ),
           FlatButton(
             color: Colors.blue,
             textColor: Colors.white,
-            onPressed: _formProgress == 1 ? _showWelcomeScreen : null,
+            onPressed: _formProgress == 1 ? _showLoginScreen : null,
             child: Text('Sign up'),
           ),
         ],
