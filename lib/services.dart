@@ -1,0 +1,1 @@
+String url = 'https://eu-vs-covid.herokuapp.com/api/';

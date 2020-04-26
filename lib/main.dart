@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:passwordfield/passwordfield.dart';
+import 'package:flutter_front/welcome.dart';
+
+import 'package:flutter_front/common/apifunctions/reqLoginAPI.dart';
 
 void main() => runApp(SignUpApp());
 
@@ -8,9 +11,9 @@ class SignUpApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/': (context) => SignUpScreen(),
+        '/': (context) => LoginScreen(),
         '/welcome': (context) => WelcomeScreen(),
-        '/login': (context) => LoginScreen(),
+        '/register': (context) => SignUpScreen(),
       },
     );
   }
@@ -20,8 +23,13 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: Center(
+        body: Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+        image: AssetImage("images/8430.jpg"),
+        fit: BoxFit.cover,
+      )),
+      child: Center(
         child: SizedBox(
           width: 400,
           child: Card(
@@ -29,7 +37,7 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }
 
@@ -37,25 +45,20 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
-      body: Center(
-        child: SizedBox(
-          width: 400,
-          child: Card(
-            child: SignUpForm(),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class WelcomeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text('Welcome!', style: Theme.of(context).textTheme.display3),
+      body: Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+            image: AssetImage("assets/images/8430.jpg"),
+            fit: BoxFit.cover,
+          )),
+          child: Center(
+            child: SizedBox(
+              width: 400,
+              child: Card(
+                child: SignUpForm(),
+              ),
+            ),
+          )
       ),
     );
   }
@@ -81,13 +84,17 @@ class _LoginFormState extends State<LoginForm> {
     Navigator.of(context).pushNamed('/welcome');
   }
 
+  void _showSignUpScreen() {
+    Navigator.of(context).pushNamed("/register");
+  }
+
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Login', style: Theme.of(context).textTheme.display1),
+          Text('Sign In', style: Theme.of(context).textTheme.display1),
           Padding(
             padding: EdgeInsets.all(8.0),
             child: TextFormField(
@@ -106,9 +113,16 @@ class _LoginFormState extends State<LoginForm> {
           FlatButton(
             color: Colors.blue,
             textColor: Colors.white,
-            onPressed: _showWelcomeScreen,
+            onPressed: () {
+              reqLoginAPI(context, _usernameTextController.text, _passwordTextController.text); },
             child: Text('Login'),
           ),
+          FlatButton(
+            color: Colors.red,
+            textColor: Colors.white,
+            onPressed: _showSignUpScreen,
+            child: Text("Register"),
+          )
         ],
       ),
     );
@@ -148,7 +162,7 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   void _showLoginScreen() {
-    Navigator.of(context).pushNamed('/login');
+    Navigator.of(context).pushNamed('/');
   }
 
   @override
@@ -193,17 +207,14 @@ class _SignUpFormState extends State<SignUpForm> {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: TextFormField(
-              obscureText: true,
-              controller: _cpasswordTextController,
-              decoration: InputDecoration(hintText: 'Confirm Password'),
-              validator: (val){
-                if(val.isEmpty)
-                  return 'Empty';
-                if(val != _passwordTextController.text)
-                  return 'Not match';
-                return null;
-              }
-            ),
+                obscureText: true,
+                controller: _cpasswordTextController,
+                decoration: InputDecoration(hintText: 'Confirm Password'),
+                validator: (val) {
+                  if (val.isEmpty) return 'Empty';
+                  if (val != _passwordTextController.text) return 'Not match';
+                  return null;
+                }),
           ),
           FlatButton(
             color: Colors.blue,
