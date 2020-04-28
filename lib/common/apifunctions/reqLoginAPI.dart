@@ -5,13 +5,13 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_front/welcome.dart';
 import 'package:flutter_front/common/functions/showDialogSingleButton.dart';
 import 'dart:convert';
+import 'package:flutter_front/services.dart';
 
 import 'package:flutter_front/models/json/loginModel.dart';
 
 Future<LoginModel> reqLoginAPI(BuildContext context,
     String username, String password) async {
-  //final url = 'https://eu-vs-covid.herokuapp.com/api/login';
-  final url = 'http://127.0.0.1:5000/api/login';
+  final base_url = ApiSettings.GetApiEndpoint();
   
   Map<String, String> body = {
     'username' : username,
@@ -19,7 +19,7 @@ Future<LoginModel> reqLoginAPI(BuildContext context,
   };
 
   final response = await http.post(
-    url,
+    base_url + 'login',
     headers: {'Content-Type' : "application/json"},
     body: json.encode(body)
   );

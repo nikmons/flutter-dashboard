@@ -48,7 +48,7 @@ class SignUpScreen extends StatelessWidget {
       body: Container(
           decoration: BoxDecoration(
               image: DecorationImage(
-            image: AssetImage("assets/images/8430.jpg"),
+            image: AssetImage("images/8430.jpg"),
             fit: BoxFit.cover,
           )),
           child: Center(
